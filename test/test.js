@@ -3,10 +3,6 @@ import {
   getBpmnJS
 } from 'bpmn-js/test/helper';
 
-import BpmnJS from 'bpmn-js';
-
-import ExecutionPlatform from '../execution-platform';
-
 import ExecutionPlatformModule from '..';
 
 var bpmnXML = require('./cloud.bpmn');
@@ -14,85 +10,64 @@ var bpmnXML = require('./cloud.bpmn');
 
 describe('execution-platform', function() {
 
-  describe('should extend BpmnJS instance', function() {
-
-    beforeEach(bootstrapModeler(bpmnXML, {
-      additionalModules: [
-        ExecutionPlatformModule
-      ]
-    }));
+  beforeEach(bootstrapModeler(bpmnXML, {
+    additionalModules: [
+      ExecutionPlatformModule
+    ]
+  }));
 
 
-    it.only('serializing exporter value', function() {
-
-      // given
-      var bpmnJS = getBpmnJS();
-
-      // when
-      var executionPlatformHelper = bpmnJS.get('executionPlatform');
-      var executionPlatform = executionPlatformHelper.getExecutionPlatform();
-
-      // then
-      expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
-      expect(executionPlatform).to.have.property('version', '1.0.0');
-    });
-
-  });
-
-
-  it('should extend existing instance via helper', function(done) {
+  it('should expose execution platform details', function() {
 
     // given
-    var dmnJS = new DmnJS();
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
 
     // when
-    ExecutionPlatform({ name: 'foo', version: 'bar' }, dmnJS);
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
 
     // then
-    dmnJS.importXML(dmnXML, function() {
-
-      dmnJS.saveXML(function(err, xml) {
-
-        expect(xml).to.contain('exporter="foo"');
-        expect(xml).to.contain('exporterVersion="bar"');
-
-        done(err);
-      });
-    });
-
+    expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
+    expect(executionPlatform).to.have.property('version', '1.0.0');
   });
 
 
-  describe('should throw on invalid configuration', function() {
+  it.only('should set execution platform details', function() {
 
-    it('exporter config missing', function() {
+    // given
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
 
-      expect(function() {
-
-        new BpmnJS({
-          additionalModules: [
-            ExecutionPlatformModule
-          ]
-        });
-
-      }).to.throw('config.exporter = { name, version } not configured');
+    // when
+    executionPlatformHelper.setExecutionPlatform({
+      name: 'Camunda Platform',
+      version: '7.16.0'
     });
 
-
-    it('exporter config invalid props', function() {
-
-      expect(function() {
-
-        new BpmnJS({
-          additionalModules: [
-            ExecutionPlatformModule
-          ],
-          exporter: {}
-        });
-
-      }).to.throw('config.exporter = { name, version } missing required props');
-    });
-
+    // then
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+    expect(executionPlatform).to.have.property('name', 'Camunda Platform');
+    expect(executionPlatform).to.have.property('version', '7.16.0');
   });
 
+
+  it.only('should undo execution platform change', function() {
+
+    // given
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
+    var commandStack = bpmnJS.get('commandStack');
+
+    // when
+    executionPlatformHelper.setExecutionPlatform({
+      name: 'Camunda Platform',
+      version: '7.16.0'
+    });
+    commandStack.undo();
+
+    // then
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+    expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
+    expect(executionPlatform).to.have.property('version', '1.0.0');
+  });
 });
