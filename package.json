@@ -6,7 +6,8 @@
   "scripts": {
     "all": "run-s lint test",
     "lint": "eslint .",
-    "test": "karma start"
+    "test": "karma start",
+    "dev": "npm test -- --auto-watch --no-single-run"
   },
   "publishConfig": {
     "access": "public"

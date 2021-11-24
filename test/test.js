@@ -1,47 +1,40 @@
 import {
-  bootstrapViewer,
+  bootstrapModeler,
   getBpmnJS
 } from 'bpmn-js/test/helper';
 
 import BpmnJS from 'bpmn-js';
-import DmnJS from 'dmn-js';
 
 import ExecutionPlatform from '../execution-platform';
 
 import ExecutionPlatformModule from '..';
 
-var bpmnXML = require('./process.bpmn');
-var dmnXML = require('./decision.dmn');
+var bpmnXML = require('./cloud.bpmn');
 
 
 describe('execution-platform', function() {
 
   describe('should extend BpmnJS instance', function() {
 
-    beforeEach(bootstrapViewer(bpmnXML, {
+    beforeEach(bootstrapModeler(bpmnXML, {
       additionalModules: [
         ExecutionPlatformModule
-      ],
-      exporter: {
-        name: 'foo',
-        version: 'bar'
-      }
+      ]
     }));
 
 
-    it('serializing exporter value', function(done) {
+    it.only('serializing exporter value', function() {
 
       // given
       var bpmnJS = getBpmnJS();
 
       // when
-      bpmnJS.saveXML(function(err, xml) {
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
+      var executionPlatform = executionPlatformHelper.getExecutionPlatform();
 
-        expect(xml).to.contain('exporter="foo"');
-        expect(xml).to.contain('exporterVersion="bar"');
-
-        done(err);
-      });
+      // then
+      expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
+      expect(executionPlatform).to.have.property('version', '1.0.0');
     });
 
   });
