@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/bpmn-io/execution-platform/workflows/CI/badge.svg)](https://github.com/bpmn-io/execution-platform/actions?query=workflow%3ACI)
 
-Set `executionPlatform` and `executionPlatformVersion` in your BPMN and DMN diagrams.
+Set `executionPlatform` and `executionPlatformVersion` in your BPMN diagrams.
 
 ## Usage
 
