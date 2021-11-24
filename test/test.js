@@ -1,105 +1,128 @@
 import {
-  bootstrapViewer,
+  bootstrapModeler,
   getBpmnJS
 } from 'bpmn-js/test/helper';
 
-import BpmnJS from 'bpmn-js';
-import DmnJS from 'dmn-js';
-
-import ExecutionPlatform from '../execution-platform';
-
 import ExecutionPlatformModule from '..';
+import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
-var bpmnXML = require('./process.bpmn');
-var dmnXML = require('./decision.dmn');
+var bpmnXML = require('./cloud.bpmn');
+var missingExecutionPlatformXML = require('./missing-execution-platform.bpmn');
 
 
 describe('execution-platform', function() {
 
-  describe('should extend BpmnJS instance', function() {
+  beforeEach(bootstrapModeler(bpmnXML, {
+    additionalModules: [
+      ExecutionPlatformModule
+    ],
+    moddleExtensions: {
+      modeler: ModelerModdleExtension
+    }
+  }));
 
-    beforeEach(bootstrapViewer(bpmnXML, {
+
+  it('should expose execution platform details', function() {
+
+    // given
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
+
+    // when
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+
+    // then
+    expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
+    expect(executionPlatform).to.have.property('version', '1.0.0');
+  });
+
+
+  it('should set execution platform details', function() {
+
+    // given
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
+
+    // when
+    executionPlatformHelper.setExecutionPlatform({
+      name: 'Camunda Platform',
+      version: '7.16.0'
+    });
+
+    // then
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+    expect(executionPlatform).to.have.property('name', 'Camunda Platform');
+    expect(executionPlatform).to.have.property('version', '7.16.0');
+  });
+
+
+  it('should undo execution platform change', function() {
+
+    // given
+    var bpmnJS = getBpmnJS();
+    var executionPlatformHelper = bpmnJS.get('executionPlatform');
+    var commandStack = bpmnJS.get('commandStack');
+
+    // when
+    executionPlatformHelper.setExecutionPlatform({
+      name: 'Camunda Platform',
+      version: '7.16.0'
+    });
+    commandStack.undo();
+
+    // then
+    var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+    expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
+    expect(executionPlatform).to.have.property('version', '1.0.0');
+  });
+
+
+  describe('missing execution-platform', function() {
+
+    beforeEach(bootstrapModeler(missingExecutionPlatformXML, {
       additionalModules: [
         ExecutionPlatformModule
       ],
-      exporter: {
-        name: 'foo',
-        version: 'bar'
+      moddleExtensions: {
+        modeler: ModelerModdleExtension
       }
     }));
 
-
-    it('serializing exporter value', function(done) {
+    it('should return null if execution platform details not present', function() {
 
       // given
       var bpmnJS = getBpmnJS();
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
 
       // when
-      bpmnJS.saveXML(function(err, xml) {
+      var executionPlatform = executionPlatformHelper.getExecutionPlatform();
 
-        expect(xml).to.contain('exporter="foo"');
-        expect(xml).to.contain('exporterVersion="bar"');
+      // then
+      expect(executionPlatform).to.be.null;
+    });
 
-        done(err);
+
+    it('should set execution platform with correct namespace', function(done) {
+
+      // given
+      var bpmnJS = getBpmnJS();
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
+
+      // when
+      executionPlatformHelper.setExecutionPlatform({
+        name: 'Camunda Platform',
+        version: '7.16.0'
       });
-    });
+      bpmnJS.saveXML().then(function(result) {
 
+        expect(result.xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
+        expect(result.xml).to.contain('modeler:executionPlatform="Camunda Platform"');
+        expect(result.xml).to.contain('modeler:executionPlatformVersion="7.16.0"');
+
+        done();
+      }).catch(done);
+
+    });
   });
-
-
-  it('should extend existing instance via helper', function(done) {
-
-    // given
-    var dmnJS = new DmnJS();
-
-    // when
-    ExecutionPlatform({ name: 'foo', version: 'bar' }, dmnJS);
-
-    // then
-    dmnJS.importXML(dmnXML, function() {
-
-      dmnJS.saveXML(function(err, xml) {
-
-        expect(xml).to.contain('exporter="foo"');
-        expect(xml).to.contain('exporterVersion="bar"');
-
-        done(err);
-      });
-    });
-
-  });
-
-
-  describe('should throw on invalid configuration', function() {
-
-    it('exporter config missing', function() {
-
-      expect(function() {
-
-        new BpmnJS({
-          additionalModules: [
-            ExecutionPlatformModule
-          ]
-        });
-
-      }).to.throw('config.exporter = { name, version } not configured');
-    });
-
-
-    it('exporter config invalid props', function() {
-
-      expect(function() {
-
-        new BpmnJS({
-          additionalModules: [
-            ExecutionPlatformModule
-          ],
-          exporter: {}
-        });
-
-      }).to.throw('config.exporter = { name, version } missing required props');
-    });
-
-  });
-
 });
+

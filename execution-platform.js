@@ -1,30 +1,65 @@
 /**
- * @param {Object} config
- * @param {EventBus} eventBus
+ * @typedef ExecutionPlatformDetails
+ * @property {string} name
+ * @property {string} version
+*/
+
+/**
+ * Get and set execution platform.
+ *
+ * @example
+ * ```javascript
+ * var executionPlatformHelper = modeler.get('executionPlatform');
+ * executionPlatformHelper.setExecutionPlatform({ name: 'Camunda Cloud', version: '1.3.0' });
+ *
+ * var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+ *
+ * // { name: 'Camunda Cloud', version: '1.3.0' }
+ * console.log(executionPlatform);
+ * ```
  */
-export default function ExecutionPlatform(config, eventBus) {
-
-  if (!config) {
-    throw new Error('config.exporter = { name, version } not configured');
-  }
-
-  var name = config.name,
-      version = config.version;
-
-  if (!name || !version) {
-    throw new Error('config.exporter = { name, version } missing required props');
-  }
-
-  eventBus.on('saveXML.start', function(event) {
-    var definitions = event.definitions;
-
-    definitions.exporter = name;
-    definitions.exporterVersion = version;
-  });
-
+export default function ExecutionPlatform(bpmnjs, modeling, canvas) {
+  this._bpmnjs = bpmnjs;
+  this._modeling = modeling;
+  this._canvas = canvas;
 }
 
 ExecutionPlatform.$inject = [
-  'config.exporter',
-  'eventBus'
+  'bpmnjs',
+  'modeling',
+  'canvas'
 ];
+
+/**
+ * Get execution platform details or null if not present.
+ *
+ * @returns { ExecutionPlatformDetails | null }
+ */
+ExecutionPlatform.prototype.getExecutionPlatform = function() {
+  var definitions = this._bpmnjs.getDefinitions(),
+      name = definitions.get('modeler:executionPlatform');
+
+  if (!name) {
+    return null;
+  }
+
+  return {
+    name: name,
+    version: definitions.get('modeler:executionPlatformVersion')
+  };
+};
+
+/**
+ * Set execution platform details.
+ *
+ * @param { ExecutionPlatformDetails } executionPlatform
+ */
+ExecutionPlatform.prototype.setExecutionPlatform = function(executionPlatform) {
+  var definitions = this._bpmnjs.getDefinitions();
+  var rootElement = this._canvas.getRootElement();
+
+  this._modeling.updateModdleProperties(rootElement, definitions, {
+    'modeler:executionPlatform': executionPlatform.name,
+    'modeler:executionPlatformVersion': executionPlatform.version
+  });
+};

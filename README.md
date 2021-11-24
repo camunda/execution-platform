@@ -10,13 +10,17 @@ Set `executionPlatform` and `executionPlatformVersion` in your BPMN and DMN diag
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 import ExecutionPlatformModule from '@bpmn-io/execution-platform';
+import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
 
 // extend the BPMN editor with the exporter module
 var modeler = new BpmnModeler({
   additionalModules: [
     ExecutionPlatformModule
-  ]
+  ],
+  moddleExtensions: {
+    modeler: ModelerModdleExtension
+  }
 });
 
 var executionPlatformHelper = modeler.get('executionPlatform');
