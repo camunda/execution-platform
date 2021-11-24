@@ -6,6 +6,7 @@ import {
 import ExecutionPlatformModule from '..';
 
 var bpmnXML = require('./cloud.bpmn');
+var missingExecutionPlatformXML = require('./missing-execution-platform.bpmn');
 
 
 describe('execution-platform', function() {
@@ -32,7 +33,7 @@ describe('execution-platform', function() {
   });
 
 
-  it.only('should set execution platform details', function() {
+  it('should set execution platform details', function() {
 
     // given
     var bpmnJS = getBpmnJS();
@@ -51,7 +52,7 @@ describe('execution-platform', function() {
   });
 
 
-  it.only('should undo execution platform change', function() {
+  it('should undo execution platform change', function() {
 
     // given
     var bpmnJS = getBpmnJS();
@@ -70,4 +71,28 @@ describe('execution-platform', function() {
     expect(executionPlatform).to.have.property('name', 'Camunda Cloud');
     expect(executionPlatform).to.have.property('version', '1.0.0');
   });
+
+
+  describe('missing execution-platform', function() {
+
+    beforeEach(bootstrapModeler(missingExecutionPlatformXML, {
+      additionalModules: [
+        ExecutionPlatformModule
+      ]
+    }));
+
+    it.only('should return null if execution platform details not present', function() {
+
+      // given
+      var bpmnJS = getBpmnJS();
+
+      // when
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
+      var executionPlatform = executionPlatformHelper.getExecutionPlatform();
+
+      // then
+      expect(executionPlatform).to.be.null;
+    });
+  });
 });
+

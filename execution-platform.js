@@ -1,9 +1,10 @@
 /**
  * @param {Object} bpmnjs
  */
-export default function ExecutionPlatform(bpmnjs, modeling) {
+export default function ExecutionPlatform(bpmnjs, modeling, canvas) {
   this._bpmnjs = bpmnjs;
   this._modeling = modeling;
+  this._canvas = canvas;
 
   // if (!config) {
   //   throw new Error('config.exporter = { name, version } not configured');
@@ -27,7 +28,8 @@ export default function ExecutionPlatform(bpmnjs, modeling) {
 
 ExecutionPlatform.$inject = [
   'bpmnjs',
-  'modeling'
+  'modeling',
+  'canvas'
 ];
 
 ExecutionPlatform.prototype.getExecutionPlatform = function() {
@@ -41,8 +43,9 @@ ExecutionPlatform.prototype.getExecutionPlatform = function() {
 
 ExecutionPlatform.prototype.setExecutionPlatform = function(executionPlatform) {
   var definitions = this._bpmnjs.getDefinitions();
+  var rootElement = this._canvas.getRootElement();
 
-  this._modeling.updateProperties(definitions, {
+  this._modeling.updateModdleProperties(rootElement, definitions, {
     'modeler:executionPlatform': executionPlatform.name,
     'modeler:executionPlatformVersion': executionPlatform.version
   });
