@@ -4,6 +4,7 @@ import {
 } from 'bpmn-js/test/helper';
 
 import ExecutionPlatformModule from '..';
+import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
 var bpmnXML = require('./cloud.bpmn');
 var missingExecutionPlatformXML = require('./missing-execution-platform.bpmn');
@@ -14,7 +15,10 @@ describe('execution-platform', function() {
   beforeEach(bootstrapModeler(bpmnXML, {
     additionalModules: [
       ExecutionPlatformModule
-    ]
+    ],
+    moddleExtensions: {
+      modeler: ModelerModdleExtension
+    }
   }));
 
 
@@ -78,20 +82,46 @@ describe('execution-platform', function() {
     beforeEach(bootstrapModeler(missingExecutionPlatformXML, {
       additionalModules: [
         ExecutionPlatformModule
-      ]
+      ],
+      moddleExtensions: {
+        modeler: ModelerModdleExtension
+      }
     }));
 
-    it.only('should return null if execution platform details not present', function() {
+    it('should return null if execution platform details not present', function() {
 
       // given
       var bpmnJS = getBpmnJS();
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
 
       // when
-      var executionPlatformHelper = bpmnJS.get('executionPlatform');
       var executionPlatform = executionPlatformHelper.getExecutionPlatform();
 
       // then
       expect(executionPlatform).to.be.null;
+    });
+
+
+    it('should set execution platform with correct namespace', function(done) {
+
+      // given
+      var bpmnJS = getBpmnJS();
+      var executionPlatformHelper = bpmnJS.get('executionPlatform');
+
+      // when
+      executionPlatformHelper.setExecutionPlatform({
+        name: 'Camunda Platform',
+        version: '7.16.0'
+      });
+      bpmnJS.saveXML().then(function(result) {
+
+        expect(result.xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
+        expect(result.xml).to.contain('modeler:executionPlatform="Camunda Platform"');
+        expect(result.xml).to.contain('modeler:executionPlatformVersion="7.16.0"');
+
+        done();
+      }).catch(done);
+
     });
   });
 });
