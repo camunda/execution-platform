@@ -4,6 +4,9 @@
  * @property {string} version
 */
 
+var EXECUTION_PLATFORM_NAME = 'modeler:executionPlatform',
+    EXECUTION_PLATFORM_VERSION = 'modeler:executionPlatformVersion';
+
 /**
  * Get and set execution platform.
  *
@@ -18,16 +21,36 @@
  * console.log(executionPlatform);
  * ```
  */
-export default function ExecutionPlatform(bpmnjs, modeling, canvas) {
+export default function ExecutionPlatform(config, bpmnjs, modeling, canvas, eventBus) {
   this._bpmnjs = bpmnjs;
   this._modeling = modeling;
   this._canvas = canvas;
+
+  if (!config) {
+    return;
+  }
+
+  var name = config.name,
+      version = config.version;
+
+  if (!name || !version) {
+    throw new Error('config.executionPlatform = { name, version } missing required props');
+  }
+
+  eventBus.on('saveXML.start', function(event) {
+    var definitions = event.definitions;
+
+    definitions.set(EXECUTION_PLATFORM_NAME, name);
+    definitions.set(EXECUTION_PLATFORM_VERSION, version);
+  });
 }
 
 ExecutionPlatform.$inject = [
+  'config.executionPlatform',
   'bpmnjs',
   'modeling',
-  'canvas'
+  'canvas',
+  'eventBus'
 ];
 
 /**
@@ -37,7 +60,7 @@ ExecutionPlatform.$inject = [
  */
 ExecutionPlatform.prototype.getExecutionPlatform = function() {
   var definitions = this._bpmnjs.getDefinitions(),
-      name = definitions.get('modeler:executionPlatform');
+      name = definitions.get(EXECUTION_PLATFORM_NAME);
 
   if (!name) {
     return null;
@@ -45,7 +68,7 @@ ExecutionPlatform.prototype.getExecutionPlatform = function() {
 
   return {
     name: name,
-    version: definitions.get('modeler:executionPlatformVersion')
+    version: definitions.get(EXECUTION_PLATFORM_VERSION)
   };
 };
 
@@ -59,7 +82,7 @@ ExecutionPlatform.prototype.setExecutionPlatform = function(executionPlatform) {
   var rootElement = this._canvas.getRootElement();
 
   this._modeling.updateModdleProperties(rootElement, definitions, {
-    'modeler:executionPlatform': executionPlatform.name,
-    'modeler:executionPlatformVersion': executionPlatform.version
+    [ EXECUTION_PLATFORM_NAME ]: executionPlatform.name,
+    [ EXECUTION_PLATFORM_VERSION ]: executionPlatform.version
   });
 };

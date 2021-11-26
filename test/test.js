@@ -102,7 +102,7 @@ describe('execution-platform', function() {
     });
 
 
-    it('should set execution platform with correct namespace', function(done) {
+    it('should set execution platform with correct namespace', async function() {
 
       // given
       var bpmnJS = getBpmnJS();
@@ -113,15 +113,45 @@ describe('execution-platform', function() {
         name: 'Camunda Platform',
         version: '7.16.0'
       });
-      bpmnJS.saveXML().then(function(result) {
 
-        expect(result.xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
-        expect(result.xml).to.contain('modeler:executionPlatform="Camunda Platform"');
-        expect(result.xml).to.contain('modeler:executionPlatformVersion="7.16.0"');
+      // then
+      var result = await bpmnJS.saveXML();
 
-        done();
-      }).catch(done);
+      expect(result.xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
+      expect(result.xml).to.contain('modeler:executionPlatform="Camunda Platform"');
+      expect(result.xml).to.contain('modeler:executionPlatformVersion="7.16.0"');
+    });
+  });
 
+
+  describe('setting execution platform imperatively on save', function() {
+
+    beforeEach(bootstrapModeler(missingExecutionPlatformXML, {
+      additionalModules: [
+        ExecutionPlatformModule
+      ],
+      moddleExtensions: {
+        modeler: ModelerModdleExtension
+      },
+      executionPlatform: {
+        name: 'Camunda Platform',
+        version: '7.16.0'
+      }
+    }));
+
+
+    it('should set execution platform on saveXML', async function() {
+
+      // given
+      var bpmnJS = getBpmnJS();
+
+      // when
+      var result = await bpmnJS.saveXML();
+
+      // then
+      expect(result.xml).to.contain('xmlns:modeler="http://camunda.org/schema/modeler/1.0"');
+      expect(result.xml).to.contain('modeler:executionPlatform="Camunda Platform"');
+      expect(result.xml).to.contain('modeler:executionPlatformVersion="7.16.0"');
     });
   });
 });
