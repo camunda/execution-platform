@@ -1,7 +1,7 @@
 {
   "name": "@bpmn-io/execution-platform",
   "version": "0.2.0",
-  "description": "Add execution platform meta-data to BPMN diagrams",
+  "description": "Add execution platform meta-data to BPMN and DMN diagrams",
   "main": "index.js",
   "scripts": {
     "all": "run-s lint test",
@@ -28,8 +28,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "bpmn-js": "^8.8.2",
+    "bpmn-js": "^9.0.3",
     "chai": "^4.2.0",
+    "dmn-js": "^12.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-bpmn-io": "^0.13.0",
     "karma": "^6.3.9",

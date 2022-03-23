@@ -3,14 +3,14 @@ import {
   getBpmnJS
 } from 'bpmn-js/test/helper';
 
-import ExecutionPlatformModule from '..';
+import ExecutionPlatformModule from '../..';
 import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
-var bpmnXML = require('./cloud.bpmn');
-var missingExecutionPlatformXML = require('./missing-execution-platform.bpmn');
+var bpmnXML = require('../fixtures/bpmn/cloud.bpmn');
+var missingExecutionPlatformXML = require('../fixtures/bpmn/missing-execution-platform.bpmn');
 
 
-describe('execution-platform', function() {
+describe('execution-platform (BPMN)', function() {
 
   beforeEach(bootstrapModeler(bpmnXML, {
     additionalModules: [

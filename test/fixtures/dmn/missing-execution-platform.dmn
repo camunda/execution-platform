@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_1xeussi" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.0.0-alpha.1">
+  <decision id="DecisionTable" name="Decision 1">
+    <informationRequirement id="InformationRequirement_06f3mlt">
+      <requiredDecision href="#LiteralExpression" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0wykvsp">
+      <input id="Input_1">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" typeRef="string" />
+    </decisionTable>
+  </decision>
+  <decision id="LiteralExpression">
+    <variable id="InformationItem_1lj5j8b" />
+    <literalExpression id="LiteralExpression_13xjdok" />
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="DecisionTable">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_1pgq00w" dmnElementRef="InformationRequirement_06f3mlt">
+        <di:waypoint x="250" y="320" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_1445o1z" dmnElementRef="LiteralExpression">
+        <dc:Bounds height="80" width="180" x="160" y="320" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

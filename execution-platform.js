@@ -21,10 +21,11 @@ var EXECUTION_PLATFORM_NAME = 'modeler:executionPlatform',
  * console.log(executionPlatform);
  * ```
  */
-export default function ExecutionPlatform(config, bpmnjs, modeling, canvas, eventBus) {
-  this._bpmnjs = bpmnjs;
-  this._modeling = modeling;
-  this._canvas = canvas;
+export default function ExecutionPlatform(config, injector, commandStack) {
+
+  // _parent is provided in dmn-js
+  this._modeler = injector.get('bpmnjs', false) || injector.get('_parent');
+  this._commandStack = commandStack;
 
   if (!config) {
     return;
@@ -37,6 +38,12 @@ export default function ExecutionPlatform(config, bpmnjs, modeling, canvas, even
     throw new Error('config.executionPlatform = { name, version } missing required props');
   }
 
+  // TODO(@barmac): required in bpmn-js due to https://github.com/bpmn-io/bpmn-js/issues/1624
+  var eventBus = this._modeler;
+  if (injector.get('bpmnjs', false)) {
+    eventBus = injector.get('eventBus');
+  }
+
   eventBus.on('saveXML.start', function(event) {
     var definitions = event.definitions;
 
@@ -47,9 +54,8 @@ export default function ExecutionPlatform(config, bpmnjs, modeling, canvas, even
 
 ExecutionPlatform.$inject = [
   'config.executionPlatform',
-  'bpmnjs',
-  'modeling',
-  'canvas',
+  'injector',
+  'commandStack',
   'eventBus'
 ];
 
@@ -59,7 +65,7 @@ ExecutionPlatform.$inject = [
  * @returns { ExecutionPlatformDetails | null }
  */
 ExecutionPlatform.prototype.getExecutionPlatform = function() {
-  var definitions = this._bpmnjs.getDefinitions(),
+  var definitions = this._modeler.getDefinitions(),
       name = definitions.get(EXECUTION_PLATFORM_NAME);
 
   if (!name) {
@@ -78,11 +84,7 @@ ExecutionPlatform.prototype.getExecutionPlatform = function() {
  * @param { ExecutionPlatformDetails } executionPlatform
  */
 ExecutionPlatform.prototype.setExecutionPlatform = function(executionPlatform) {
-  var definitions = this._bpmnjs.getDefinitions();
-  var rootElement = this._canvas.getRootElement();
-
-  this._modeling.updateModdleProperties(rootElement, definitions, {
-    [ EXECUTION_PLATFORM_NAME ]: executionPlatform.name,
-    [ EXECUTION_PLATFORM_VERSION ]: executionPlatform.version
+  this._commandStack.execute('executionPlatform.update', {
+    executionPlatform: executionPlatform
   });
 };

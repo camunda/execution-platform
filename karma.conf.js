@@ -29,11 +29,11 @@ module.exports = function(karma) {
     ],
 
     files: [
-      'test/test.js'
+      'test/spec/**/*.js'
     ],
 
     preprocessors: {
-      'test/test.js': [ 'webpack' ]
+      'test/spec/**/*.js': [ 'webpack' ]
     },
 
     reporters: 'dots',
@@ -58,10 +58,11 @@ module.exports = function(karma) {
 
     webpack: {
       mode: 'development',
+      devtool: 'eval-source-map',
       module: {
         rules: [
           {
-            test: /\.bpmn$/,
+            test: /\.(bpmn|dmn)$/,
             use: 'raw-loader'
           }
         ]
