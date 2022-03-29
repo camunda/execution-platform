@@ -1,6 +1,8 @@
-# @bpmn-io/execution-platform
+> As of v0.3.0, this package has been renamed from @bpmn-io/execution-platform to @camunda/execution-platform. Read more on the changes in [the issue](https://github.com/bpmn-io/execution-platform/issues/1).
 
-[![CI](https://github.com/bpmn-io/execution-platform/workflows/CI/badge.svg)](https://github.com/bpmn-io/execution-platform/actions?query=workflow%3ACI)
+# @camunda/execution-platform
+
+[![CI](https://github.com/camunda/execution-platform/workflows/CI/badge.svg)](https://github.com/camunda/execution-platform/actions?query=workflow%3ACI)
 
 Set `executionPlatform` and `executionPlatformVersion` in your BPMN and DMN diagrams.
 
@@ -11,7 +13,7 @@ Set `executionPlatform` and `executionPlatformVersion` in your BPMN and DMN diag
 ```javascript
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
-import ExecutionPlatformModule from '@bpmn-io/execution-platform';
+import ExecutionPlatformModule from '@camunda/execution-platform';
 import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
 
@@ -47,7 +49,7 @@ imperatively each time you save the diagram:
 ```javascript
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 
-import ExecutionPlatformModule from '@bpmn-io/execution-platform';
+import ExecutionPlatformModule from '@camunda/execution-platform';
 import ModelerModdleExtension from 'modeler-moddle/resources/modeler.json';
 
 // extend the BPMN editor with the module and moddle extension together with configuration
@@ -76,7 +78,7 @@ modeler.saveXML(function(err, xml) {
 ```javascript
 import DmnModeler from 'dmn-js/lib/Modeler';
 
-import ExecutionPlatformModule from '@bpmn-io/execution-platform';
+import ExecutionPlatformModule from '@camunda/execution-platform';
 import ModelerModdleExtension from 'modeler-moddle/resources/dmn-modeler.json';
 
 
@@ -124,7 +126,7 @@ imperatively each time you save the diagram:
 ```javascript
 import DmnModeler from 'dmn-js/lib/Modeler';
 
-import ExecutionPlatformModule from '@bpmn-io/execution-platform';
+import ExecutionPlatformModule from '@camunda/execution-platform';
 import ModelerModdleExtension from 'modeler-moddle/resources/dmn-modeler.json';
 
 // extend the DMN editor with the module and moddle extension together with configuration

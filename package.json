@@ -1,6 +1,6 @@
 {
-  "name": "@bpmn-io/execution-platform",
-  "version": "0.2.0",
+  "name": "@camunda/execution-platform",
+  "version": "0.3.0",
   "description": "Add execution platform meta-data to BPMN and DMN diagrams",
   "main": "src/index.js",
   "files": [
@@ -17,10 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/bpmn-io/execution-platform.git"
+    "url": "git+ssh://git@github.com/camunda/execution-platform.git"
   },
   "keywords": [
     "BPMN",
+    "DMN",
+    "modeler",
     "execution platform"
   ],
   "contributors": [
