@@ -1,5 +1,5 @@
-import ExecutionPlatform from './execution-platform';
-import UpdateExecutionPlatformCommand from './update-execution-platform-command';
+import ExecutionPlatform from './ExecutionPlatform';
+import UpdateExecutionPlatformCommand from './cmd/UpdateExecutionPlatformCommand';
 
 export default {
   __init__: [ 'executionPlatform', 'updateExecutionPlatformCommand' ],
