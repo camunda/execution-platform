@@ -30,6 +30,8 @@ UpdateExecutionPlatformHandler.prototype.revert = function(context) {
   return [];
 };
 
+UpdateExecutionPlatformHandler.$inject = [ 'injector' ];
+
 function setExecutionPlatform(definitions, properties) {
   definitions.set(EXECUTION_PLATFORM_NAME, properties.name);
   definitions.set(EXECUTION_PLATFORM_VERSION, properties.version);
