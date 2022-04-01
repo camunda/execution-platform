@@ -6,6 +6,10 @@ All notable changes to [@camunda/execution-platform](https://github.com/camunda/
 
 ___Note:__ Yet to be released changes appear here._
 
+## 0.3.2
+
+* `FIX`: make work when code is minified, second try ([#4](https://github.com/camunda/execution-platform/issues/4))
+
 ## 0.3.1
 
 * `FIX`: make work when code is minified ([#4](https://github.com/camunda/execution-platform/issues/4))

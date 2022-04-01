@@ -5,6 +5,8 @@ export default function UpdateExecutionPlatformCommand(commandStack) {
   commandStack.registerHandler('executionPlatform.update', UpdateExecutionPlatformHandler);
 }
 
+UpdateExecutionPlatformCommand.$inject = [ 'commandStack' ];
+
 function UpdateExecutionPlatformHandler(injector) {
 
   // _parent is provided in dmn-js
