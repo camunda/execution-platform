@@ -1,6 +1,6 @@
 {
   "name": "@camunda/execution-platform",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Add execution platform meta-data to BPMN and DMN diagrams",
   "main": "src/index.js",
   "files": [
